@@ -1,0 +1,142 @@
+<html>
+<head>
+    <title>Led Christmas Light Controller</title>
+    <script
+            src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-minicolors/2.2.6/jquery.minicolors.css" />
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-minicolors/2.2.6/jquery.minicolors.js"></script>
+    <style type="text/css">
+        .light-container {
+width: 100%;
+    clear: both;
+    margin-top: 20px;     
+    }
+        
+        
+        .light {
+            width: 60px;
+            height: 100px;
+            border: solid 1px red;
+            display: inline-block;
+        }
+        #submit-btn {
+          margin-bottom: 20px;
+        }
+        #create-pattern {
+          
+        }
+        
+        p {
+            text-align: center;
+        }
+        
+        .delay {
+          width: 42px;
+          margin: 0 auto;
+          display: block;
+        }
+        .minicolors-swatch {
+            width: 28px;
+            position: static;
+            cursor: pointer;
+            margin-left: 10px;
+            margin-top: 5px;
+        }
+        .minicolors-theme-default.minicolors {
+            width: auto;
+            display: inline-block;
+            margin-left: 4px;
+            margin-top: 5px;
+        }
+        
+    </style>
+
+</head>
+<body>
+<div style="margin:100px;">
+    <nav class="navbar navbar-inverse navbar-static-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">Node / Esp8266 Christmas light demo.</a>
+        </div>
+    </nav>
+    <form class="form">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="num_lights">Number of lights</label>
+          <input type="text" name="num_lights" class="form-control" id="num_lights" />
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="num_lights">Number Light Patterns</label>
+          <input type="text" name="light_patterns" class="form-control" id="number_light_patterns" />
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="delay">Delay</label>
+          <input type="text" name="delay" class="form-control" id="delay" />
+        </div>
+      </div>
+      <div class="form-group">
+          <button class="btn btn-success pull-left" id='create-pattern' type='button'>Create Pattern</button>
+          <button class="btn btn-success pull-right" id='submit-btn' type="button">Send to Arduino</button>
+      </div>
+    </form>
+    <div id="light-whole" 
+          data-html-light-container='<div class="light-container-REPLACE_LIGHT_ROW light-container">REPLACE_LIGHTS</div>' 
+          data-html-light='<div class="light"><p>Light REPLACE_LIGHT_NUMBER</p><input type="number" value="REPLACE_DELAY_VALUE" class="delay" id="delay_REPLACE_LIGHT_ROW_REPLACE_LIGHT_NUMBER" /><input id="id="color_REPLACE_LIGHT_ROW_REPLACE_LIGHT_NUMBER" type="hidden" class="color-picker" /></div>' 
+
+          >
+      
+        
+          
+          
+          
+        
+    </div>
+      
+    </div>
+    
+</div>
+<script>
+    
+$('#create-pattern').on('click', () => {
+  var numberOfLights = $("#num_lights").val();
+  var numberOfRows = $("#number_light_patterns").val();
+  
+  var divContainer = $('#light-whole');
+  var html = "";
+  
+  for (var i = 0; i < numberOfRows; i += 1) {
+     
+     var lightsHtml = '';
+     for (var j = 0; j < numberOfLights; j += 1) {
+       var lightHTML =  divContainer.data('html-light');
+       lightHTML =  lightHTML.replace(/REPLACE_LIGHT_NUMBER/g, j);
+       lightHTML = lightHTML.replace(/REPLACE_LIGHT_ROW/g, i);
+       lightHTML = lightHTML.replace(/REPLACE_DELAY_VALUE/g, $("#delay").val());
+       lightsHtml += lightHTML;
+     }
+    
+     var lightdiv = divContainer.data('html-light-container');
+     lightdiv = lightdiv.replace(/REPLACE_LIGHT_ROW/g, i);
+     lightdiv = lightdiv.replace(/REPLACE_LIGHTS/g, lightsHtml);
+     html += lightdiv;
+  }
+  
+  divContainer.html(html);
+  $('.color-picker').minicolors({format: 'rgb',});
+
+  $('.color-picker').minicolors('value','#00FF00');
+
+});
+    
+</script>
+</body>
+</html>
