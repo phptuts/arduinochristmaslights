@@ -65,77 +65,70 @@ width: 100%;
         </div>
     </nav>
     <form class="form">
-      <div class="col-md-4">
         <div class="form-group">
-          <label for="num_lights">Number of lights</label>
-          <input type="text" name="num_lights" class="form-control" id="num_lights" />
+          <label for="num_lights">Light Number</label>
+          <input type="text" name="num_lights" class="form-control" id="light-num" />
         </div>
-      </div>
-      <div class="col-md-4">
         <div class="form-group">
-          <label for="num_lights">Number Light Patterns</label>
-          <input type="text" name="light_patterns" class="form-control" id="number_light_patterns" />
+          <label for="delay">Delay Times</label>
+          <input type="text"  class="form-control" id="delay-times" />
         </div>
-      </div>
-      <div class="col-md-4">
         <div class="form-group">
-          <label for="delay">Delay</label>
-          <input type="text" name="delay" class="form-control" id="delay" />
+          <label for="delay">Red</label>
+          <input type="text"  class="form-control" id="red-leds" />
         </div>
-      </div>
-      <div class="form-group">
-          <button class="btn btn-success pull-left" id='create-pattern' type='button'>Create Pattern</button>
-          <button class="btn btn-success pull-right" id='submit-btn' type="button">Send to Arduino</button>
-      </div>
+        <div class="form-group">
+          <label for="delay">Green</label>
+          <input type="text"  class="form-control" id="green-leds" />
+        </div>
+        <div class="form-group">
+          <label for="delay">Blue</label>
+          <input type="text"  class="form-control" id="blue-leds" />
+        </div>
+        <div class="form-group">
+          <label for="delay">Milli Seconds to Check</label>
+          <input type="text"  class="form-control" id="check-time" />
+        </div>
+      
     </form>
-    <div id="light-whole" 
-          data-html-light-container='<div class="light-container-REPLACE_LIGHT_ROW light-container">REPLACE_LIGHTS</div>' 
-          data-html-light='<div class="light"><p>Light REPLACE_LIGHT_NUMBER</p><input type="number" value="REPLACE_DELAY_VALUE" class="delay" id="delay_REPLACE_LIGHT_ROW_REPLACE_LIGHT_NUMBER" /><input id="id="color_REPLACE_LIGHT_ROW_REPLACE_LIGHT_NUMBER" type="hidden" class="color-picker" /></div>' 
 
-          >
-      
-        
-          
-          
-          
-        
+    <div>
+        <button class="btn btn-success pull-right" id="submit-lights">Submit Pattern</button>
     </div>
-      
-    </div>
-    
+
 </div>
 <script>
     
-$('#create-pattern').on('click', () => {
-  var numberOfLights = $("#num_lights").val();
-  var numberOfRows = $("#number_light_patterns").val();
-  
-  var divContainer = $('#light-whole');
-  var html = "";
-  
-  for (var i = 0; i < numberOfRows; i += 1) {
-     
-     var lightsHtml = '';
-     for (var j = 0; j < numberOfLights; j += 1) {
-       var lightHTML =  divContainer.data('html-light');
-       lightHTML =  lightHTML.replace(/REPLACE_LIGHT_NUMBER/g, j);
-       lightHTML = lightHTML.replace(/REPLACE_LIGHT_ROW/g, i);
-       lightHTML = lightHTML.replace(/REPLACE_DELAY_VALUE/g, $("#delay").val());
-       lightsHtml += lightHTML;
-     }
+    $("#submit-lights").on("click", function () {
+        var leds = {
+          "reds":[],
+          "greens":[],
+          "blues":[],  
+          "delayTimes": [],
+          "lightPositions": [],
+          "requestTime": 100000
+        };
+        leds.reds = $("#red-leds").val().split("|");
+        leds.greens = $("#green-leds").val().split("|");
+        leds.blues = $("#blue-leds").val().split("|");
+        leds.delayTimes = $("#delay-times").val().split("|");
+        leds.lightPositions = $("#light-num").val().split("|");
+        leds.requestTime = $("#check-time").val();
+        
+        $.ajax({
+            url: '/leds-pattern',
+            type: 'POST',
+            data: JSON.stringify(leds),
+			contentType: 'application/json',
+            success: function (data) {
+                console.log(data);
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
     
-     var lightdiv = divContainer.data('html-light-container');
-     lightdiv = lightdiv.replace(/REPLACE_LIGHT_ROW/g, i);
-     lightdiv = lightdiv.replace(/REPLACE_LIGHTS/g, lightsHtml);
-     html += lightdiv;
-  }
-  
-  divContainer.html(html);
-  $('.color-picker').minicolors({format: 'rgb',});
-
-  $('.color-picker').minicolors('value','#00FF00');
-
-});
+    });
     
 </script>
 </body>

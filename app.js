@@ -1,18 +1,52 @@
-var express = require('express')
-var app = express()
+var express = require('express');
+var app = express();
+var bodyParser = require('body-parser');
 
+app.use(bodyParser());
 
+var separator = "|";
+
+var leds = {
+  "reds":[],
+  "greens":[],
+  "blues":[],  
+  "delayTimes": [],
+  "lightPositions": [],
+  "requestTime": 1000
+};
+
+for (var i = 0; i < 60; i += 1) {
+   leds.blues.push(255);
+   leds.reds.push(0);
+   leds.greens.push(0);
+   leds.delayTimes.push(10);
+   leds.lightPositions.push(i)
+}    
+
+for (var i = 60; i > 0; i -= 1) {
+   leds.blues.push(255);
+   leds.reds.push(0);
+   leds.greens.push(0);
+   leds.delayTimes.push(10);
+   leds.lightPositions.push(i)
+}    
+    
+    
 app.get('/leds', function (req, res) {
-  
-  var leds = "";
-  for (var i = 0; i < 60; i += 1) {
-      leds += "|" + 0 + "|"
-                  + getRandomArbitrary(49, 191) + "|" 
-                  + getRandomArbitrary(49, 191);
-  }
-
-  res.send(leds);
+  console.log(leds);
+  res.send(separator + JSON.stringify(leds));
 });
+
+app.get('/leds-web', function(req, res) {
+    
+});
+
+app.post('/leds-pattern', function(req, res) {
+    console.log(req, 'post body');
+    leds = req.body;
+    res.send('OK');
+});
+
 
 app.get('/', function(req, res) {
   res.sendfile(__dirname + '/index.html');
