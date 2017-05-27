@@ -1,0 +1,116 @@
+// THANK YOU JASON PEPAS 
+// Jason's idea and program
+
+// NeoPixel Ring simple sketch (c) 2013 Shae Erisson
+// released under the GPLv3 license to match the rest of the AdaFruit NeoPixel library
+
+#include <Adafruit_NeoPixel.h>
+#include <ESP8266WiFi.h>
+#include <WiFiClient.h>
+#include <ArduinoJson.h>
+
+#ifdef __AVR__
+  #include <avr/power.h>
+#endif
+
+// How many NeoPixels are attached to the Arduino?
+#define NUMPIXELS      60
+
+// When we setup the NeoPixel library, we tell it how many pixels, and which pin to use to send signals.
+// Note that for older NeoPixel strips you might need to change the third parameter--see the strandtest
+// example for more information on possible values.
+Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, D6, NEO_GRB + NEO_KHZ800);
+WiFiClient client;
+DynamicJsonBuffer jsonBuffer; 
+
+const char* ssid = "ATXHackerspace";//type your ssid
+const char* password = "hackon!!";//type your password
+const char* host = "arduino-christmas-lighting-nglaser.c9users.io";
+const uint16_t port = 80;
+
+byte arrayOfBytes[180];
+
+
+void setup() {
+  // This is for Trinket 5V 16MHz, you can remove these three lines if you are not using a Trinket
+#if defined (__AVR_ATtiny85__)
+  if (F_CPU == 16000000) clock_prescale_set(clock_div_1);
+#endif
+  // End of trinket special code
+
+  pixels.begin(); // This initializes the NeoPixel library.
+  Serial.begin(115200);
+  delay(10);
+
+  // We start by connecting to a WiFi network
+
+  Serial.println();
+  Serial.println();
+  Serial.print("Connecting to ");
+  Serial.println(ssid);
+  
+  /* Explicitly set the ESP8266 to be a WiFi-client, otherwise, it by default,
+     would try to act as both a client and an access-point and could cause
+     network-issues with your other WiFi-devices on your WiFi-network. */
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, password);
+  
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  Serial.println("");
+  Serial.println("WiFi connected");  
+  Serial.println("IP address: ");
+  Serial.println(WiFi.localIP());
+  clear();
+  webRequest();
+}
+
+void loop() {
+  
+  // For a set of NeoPixels the first NeoPixel is 0, second is 1, all the way up to the count of pixels minus one.
+}
+
+void clear() {
+    for(int i=0;i<NUMPIXELS;i++){
+      pixels.setPixelColor(i, pixels.Color(0,0,0)); 
+      pixels.show(); 
+  }
+}
+
+/**
+ * Makes the web request to get the light pattern
+ */
+void webRequest() {
+    String newJsonString = "";
+    if (client.connect(host, port)) {
+      String url =  "/led-binary";
+      client.println("GET " + url + " HTTP/1.1");
+      client.println("Host: "+ (String)host);
+      client.println("User-Agent: Arduino/1.0");
+      client.println("Connection: close");
+      client.println();
+      client.println();
+
+      while(client.connected()) {
+        client.readBytesUntil('\n', arrayOfBytes, 180);
+      }
+      
+      loopThroughLightPattern();
+    }
+    else {
+      Serial.println("NOT CONNECTED");
+    }
+}
+
+void loopThroughLightPattern()
+{
+  for (int i=0; i < 60; i++) {
+    pixels.setPixelColor(i, pixels.Color(arrayOfBytes[i*3],arrayOfBytes[i*3+1],arrayOfBytes[i*3+2])); 
+    pixels.show();       
+  }
+}
+
+
