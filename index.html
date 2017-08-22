@@ -14,6 +14,10 @@
             font-size: 20px;
             padding: 10px;
         }
+        #btn-container {
+            margin-bottom: 20px;
+            height: 30px;
+        }
     </style>
 
 </head>
@@ -55,8 +59,19 @@
       
     </form>
 
-    <div>
+    <div id="btn-container">
         <button class="btn btn-success pull-right" id="submit-lights">Submit Pattern</button>
+    </div>
+    
+    <hr />
+    
+    <div class="form-group">
+        <label for="default_patterns">Default Patterns</label>
+        <select class="form-control col-md-6" id="default_patterns">
+            <option value="random_funk">Random Funk</option>
+            <option value="christmas_light">Christmas Lights</option>
+            <option value="snake_christmas_light">Snake Christmas Lights</option>
+        </select>
     </div>
 
 </div>
@@ -91,6 +106,20 @@
             }
         });
     
+    });
+    
+    $("#default_patterns").on("change", function () {
+        $.ajax({
+            url: '/leds-default/' + $(this).val(),
+            type: 'GET',
+			contentType: 'application/json',
+            success: function (data) {
+                console.log(data);
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
     });
     
 </script>

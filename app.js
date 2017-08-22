@@ -29,6 +29,21 @@ app.post('/leds-pattern', function(req, res) {
     res.send('OK');
 });
 
+app.get('/leds-default/:pattern', function(req, res) {
+   var pattern = req.params['pattern'];
+  console.log(pattern);
+    if(pattern == "random_funk") {
+       leds = randomFunk();
+    } 
+    else if (pattern == 'christmas_light') {
+      leds = christmasBackForthPattern();
+    }
+    else {
+      leds = christmasSnakePattern();
+    }
+    
+    res.send(separator + JSON.stringify(leds));
+});
 
 app.get('/', function(req, res) {
   res.sendfile(__dirname + '/index.html');
@@ -47,7 +62,7 @@ function randomFunk() {
       "blues":[],  
       "delayTimes": [],
       "lightPositions": [],
-      "requestTime": 90 * 1000
+      "requestTime": 8 * 1000
     };
     
   for (var i = 0; i < 59; i += 1) {
@@ -77,7 +92,7 @@ function christmasSnakePattern() {
       "blues":[],  
       "delayTimes": [],
       "lightPositions": [],
-      "requestTime": 90 * 1000
+      "requestTime": 8 * 1000
     };
   
   for (var i = 59; i >= 0; i -= 1) {
@@ -107,7 +122,7 @@ function christmasBackForthPattern() {
       "blues":[],  
       "delayTimes": [],
       "lightPositions": [],
-      "requestTime": 90 * 1000
+      "requestTime": 8 * 1000
     };
   
   for (var i = 59; i >= 0; i -= 1) {

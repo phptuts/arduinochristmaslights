@@ -141,7 +141,7 @@ void clearLights() {
  */
 void clearArrayOfLights() {
   for(int i=0; i < MAX_FRAMES; i++){
-      lights[i] = {0,0,0, 0, 0,false};
+      lights[i] = {0,0,0, 0, 0, true};
   }
 }
 
