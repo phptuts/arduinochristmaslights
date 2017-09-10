@@ -35,7 +35,7 @@ app.post('/leds-pattern', function(req, res) {
 
 app.get('/leds-default/:pattern/:ledsNumber', function(req, res) {
    var pattern = req.params['pattern'];
-  console.log(pattern);
+   numberOfLeds = req.params['ledsNumber'];
     if(pattern == "random_funk") {
        leds = randomFunk();
     } 
