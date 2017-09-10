@@ -33,27 +33,27 @@
     </p>
     <form class="form">
         <div class="form-group">
-          <label for="num_lights">Light Number</label>
+          <label for="light-num">Light Number</label>
           <input type="text" name="num_lights" class="form-control" id="light-num" placeholder="3|4|3" />
         </div>
         <div class="form-group">
-          <label for="delay">Delay Times</label>
+          <label for="delay-times">Delay Times</label>
           <input type="text"  class="form-control" id="delay-times" placeholder="30|400|33" />
         </div>
         <div class="form-group">
-          <label for="delay">Red</label>
+          <label for="red-leds">Red</label>
           <input type="text"  class="form-control" id="red-leds" placeholder="23|255|255" />
         </div>
         <div class="form-group">
-          <label for="delay">Green</label>
+          <label for="green-leds">Green</label>
           <input type="text"  class="form-control" id="green-leds" placeholder="23|255|255" />
         </div>
         <div class="form-group">
-          <label for="delay">Blue</label>
+          <label for="blue-leds">Blue</label>
           <input type="text"  class="form-control" id="blue-leds" placeholder="23|255|255" />
         </div>
         <div class="form-group">
-          <label for="delay">Milli Seconds to Check</label>
+          <label for="check-time">Milli Seconds to Check</label>
           <input type="text"  class="form-control" id="check-time" placeholder="Time in milliseconds" />
         </div>
       
@@ -64,6 +64,12 @@
     </div>
     
     <hr />
+
+    <div class="form-group">
+        <label for="number-leds">Default Patterns</label>
+        <input type="number" value="60"  class="form-control" id="number-leds" placeholder="Number Of Leds" />
+
+    </div>
     
     <div class="form-group">
         <label for="default_patterns">Default Patterns</label>
@@ -110,7 +116,7 @@
     
     $("#default_patterns").on("change", function () {
         $.ajax({
-            url: '/leds-default/' + $(this).val(),
+            url: '/leds-default/' + $("#default_patterns").val() + "/" + $("#number-leds").val(),
             type: 'GET',
 			contentType: 'application/json',
             success: function (data) {

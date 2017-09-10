@@ -6,6 +6,8 @@ app.use(bodyParser());
 
 var separator = "|";
 
+var numberOfLeds = 60;
+
 var leds = {
   "reds":[],
   "greens":[],
@@ -15,7 +17,9 @@ var leds = {
   "requestTime": 90 * 1000
 };
 
-  leds = randomFunk();
+leds = randomFunk();
+
+
 
     
 app.get('/leds', function (req, res) {
@@ -29,7 +33,7 @@ app.post('/leds-pattern', function(req, res) {
     res.send('OK');
 });
 
-app.get('/leds-default/:pattern', function(req, res) {
+app.get('/leds-default/:pattern/:ledsNumber', function(req, res) {
    var pattern = req.params['pattern'];
   console.log(pattern);
     if(pattern == "random_funk") {
@@ -65,7 +69,7 @@ function randomFunk() {
       "requestTime": 8 * 1000
     };
     
-  for (var i = 0; i < 59; i += 1) {
+  for (var i = 0; i < numberOfLeds - 1; i += 1) {
     lights.blues.push(getRandomArbitrary(40, 140));
     lights.reds.push(i % 2 == 0 ? 255 : 0);
     lights.greens.push(i % 3 == 0 ? 255 : 0);
@@ -73,7 +77,7 @@ function randomFunk() {
     lights.lightPositions.push(i);
   }    
 
-  for (var i = 59; i > 0; i -= 1) {
+  for (var i = numberOfLeds - 1; i > 0; i -= 1) {
     lights.blues.push(i % 3 == 0 ? 255 : 0);
     lights.reds.push(i % 2 == 0 ? 255 : 0);
     lights.greens.push(getRandomArbitrary(10, 90));
@@ -95,7 +99,7 @@ function christmasSnakePattern() {
       "requestTime": 8 * 1000
     };
   
-  for (var i = 59; i >= 0; i -= 1) {
+  for (var i = numberOfLeds - 1; i >= 0; i -= 1) {
     lights.blues.push(0);
     lights.reds.push(i % 2 == 0 ? 255 : 0);
     lights.greens.push(i % 2 == 1 ? 255 : 0);
@@ -103,7 +107,7 @@ function christmasSnakePattern() {
     lights.lightPositions.push(i)
   } 
   
-  for (var i = 0; i <= 59; i += 1) {
+  for (var i = 0; i <= numberOfLeds - 1; i += 1) {
     lights.blues.push(0);
     lights.greens.push(i % 2 == 0 ? 255 : 0);
     lights.reds.push(i % 2 == 1 ? 255 : 0);
@@ -125,7 +129,7 @@ function christmasBackForthPattern() {
       "requestTime": 8 * 1000
     };
   
-  for (var i = 59; i >= 0; i -= 1) {
+  for (var i = numberOfLeds -1; i >= 0; i -= 1) {
     lights.blues.push(0);
     lights.reds.push(i % 2 == 0 ? 255 : 0);
     lights.greens.push(i % 2 == 1 ? 255 : 0);
@@ -140,7 +144,7 @@ function christmasBackForthPattern() {
     lights.lightPositions.push(0)
 
   
-  for (var i = 0; i <= 59; i += 1) {
+  for (var i = 0; i <= numberOfLeds -1; i += 1) {
     lights.blues.push(0);
     lights.greens.push(i % 2 == 0 ? 255 : 0);
     lights.reds.push(i % 2 == 1 ? 255 : 0);
